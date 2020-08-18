@@ -14,3 +14,6 @@ lib/
 bin/nohup.out
 .DS_Store
 bin/sideSql.txt
+logs
+sqlplugins
+nohup.out

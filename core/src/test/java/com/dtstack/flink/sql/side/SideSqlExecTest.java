@@ -220,6 +220,42 @@ public class SideSqlExecTest {
         test(sql);
     }
 
+    @Test
+    public void testKafa() throws Exception {
+        String sql = String.format(
+                "CREATE TABLE Source(\n" +
+                        "    colName varchar\n" +
+                        " )WITH(\n" +
+                        "    type ='kafka11',\n" +
+                        "    bootstrapServers ='127.0.0.1:9092',\n" +
+                        "    zookeeperQuorum ='127.0.0.1:9092/kafka',\n" +
+                        "    offsetReset ='latest',\n" +
+                        "    topic ='Suct_Data',\n" +
+                        "    groupId='test',\n" +
+                        "    parallelism ='1',\n" +
+                        "    timezone='Asia/Shanghai'\n" +
+                        " );\n" +
+                        "\n" +
+                        " CREATE TABLE Sink(\n" +
+                        "    colName varchar\n" +
+                        " )WITH(\n" +
+                        "    type ='kafka11',\n" +
+                        "    bootstrapServers ='127.0.0.1:9092',\n" +
+                        "    zookeeperQuorum ='127.0.0.1:9092/kafka',\n" +
+                        "    topic ='Suct_Data2',\n" +
+                        "    parallelism ='1'\n" +
+                        " );\n" +
+                        "\n" +
+                        "\n" +
+                        "insert\n" +
+                        "into\n" +
+                        "    Sink\n" +
+                        "    select\n" +
+                        "        d.colName\n" +
+                        "    from\n" +
+                        "        Source as d");
+        test(sql);
+    }
     public void test(String sql) throws Exception {
         List<String> paramList = Lists.newArrayList();
         paramList.add("-sql");
@@ -228,15 +264,15 @@ public class SideSqlExecTest {
         paramList.add("-name");
         paramList.add("xc");
         paramList.add("-localSqlPluginPath");
-        paramList.add("D:\\soucecode\\flinkStreamSQL\\plugins");
+        paramList.add("/Users/jary/IdeaProjects/flinkStreamSQL/plugins");
         paramList.add("-mode");
         paramList.add("local");
-        paramList.add("-addjar");
-        paramList.add(URLEncoder.encode("[\"D:\\\\soucecode\\\\rdos-execution-engine\\\\..\\\\tmp140\\\\flink14Test-1.0-SNAPSHOT.jar\"]", Charsets.UTF_8.name()));
+        //paramList.add("-addjar");
+        //paramList.add(URLEncoder.encode("[\"D:\\\\soucecode\\\\rdos-execution-engine\\\\..\\\\tmp140\\\\flink14Test-1.0-SNAPSHOT.jar\"]", Charsets.UTF_8.name()));
         paramList.add("-remoteSqlPluginPath");
-        paramList.add("/opt/dtstack/flinkplugin");
+        paramList.add("/Users/jary/IdeaProjects/flinkStreamSQL/plugins");
         paramList.add("-confProp");
-        String conf = "{\"time.characteristic\":\"EventTime\",\"sql.checkpoint.interval\":10000}";
+        String conf = "{\"time.characteristic\":\"EventTime\",\"sql.checkpoint.interval\":5000}";
         String confEncode = URLEncoder.encode(conf, Charsets.UTF_8.name());
         paramList.add(confEncode);
 
